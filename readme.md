@@ -1,6 +1,19 @@
 # Extractable Keys
 Read about Babylon using extractable sigs to enable slashing of btc held in timelocked utxos (self-custodial staking)
-by forcing malicious parties to reveal/leak their private keys. Babylon uses one-time signature schemes. 
+by forcing malicious parties to reveal/leak their private keys. 
+
+While they are called extractable one time signatures, Babylon does not use actual one-time signature schemes (No Lamport or Winternitz).
+
+Instead the idea is to force an attacker to reveal their private key by using a fixed nonce to sign (ECDSA) more than one message.
+Using the same nonce `k` results in the same `r` value in a sig (ECDSA signatures are of the form `r,s`). The actual nonce `k` is 
+called the "secret" nonce, while `r` is calle the "public nonce". 
+
+In the case of Babylon, a finality provider (PoS validator) must commit in advance to a specific `r` value for each block height. Using 
+any other value invalidates their vote. However, if they sign more than one block at the same height (an attack), then their private
+key gets leaked. This is what this example demonstrates - and it is fairly straightforward. 
+
+The actual usage in Babylon is a bite more complex, because they use Shnorr signs + Adaptor sigs. But the idea for private key
+extraction is the same.
 
 This repo started as just some sample code (using chatgpt) to extract private keys through nonce reuse in ecdsa.
 

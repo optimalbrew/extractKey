@@ -8,8 +8,11 @@ from sympy import mod_inverse
 ## Steps:
 1. Generate an ECDSA key pair (private and public key).
 2. Hash two different messages.
-3. Sign both messages using the same fixed nonce (k).
+3. Sign both messages using the same fixed nonce (k). This is called the "secret" nonce
 4. Extract the signature components (r, s) for both messages.
+   Since the nonce is fixed, both signatures will share the same r value.
+   Babylon calls this the "public" nonce. PoS validators commit in advance to a distinct value for each block height.
+   The actual use in Babylon is a bit more complex: because Shcnorr and Adaptor signatures are used
 5. Compute the nonce (k) using the difference of message hashes and signature values.
 6. Recover the private key using the extracted nonce.
 7. Verify that the recovered private key matches the original.
@@ -47,6 +50,7 @@ def sign_with_fixed_nonce(sk, msg, k):
 
 r1, s1 = sign_with_fixed_nonce(sk, msg1, k)
 r2, s2 = sign_with_fixed_nonce(sk, msg2, k)
+# r1 and r2 will be the same because k is reused
 
 # Recovering the nonce k using nonce reuse attack
 numerator = (hash1 - hash2) % n
