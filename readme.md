@@ -1,4 +1,5 @@
 # Extractable Keys
+
 Read about Babylon using extractable sigs to enable slashing of btc held in timelocked utxos (self-custodial staking)
 by forcing malicious parties to reveal/leak their private keys. 
 
@@ -44,6 +45,7 @@ Private key `d` is computed as:
 d = \frac{(s_1 \cdot k - h_1)}{r} \mod n
 ```
 
+NOTE: Later example added for Adaptor signature
 
 ## dependencies
 move into the directory and install 
