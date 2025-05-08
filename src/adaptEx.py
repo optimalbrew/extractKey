@@ -1,5 +1,17 @@
 # This example demonstrates adaptor signatures using chatGPT.
 """
+Warning: This is not very useful as the logic is not that precise.
+
+I realized there was something wrong in this ECDSA example. This is an illsutration of
+the limitations (current limitations) of vibe coding! We need to insepct the code carefully 
+and make sure it is correct
+
+# in what follows, the above r_t and R_t are not used because this is a ECDSA example. 
+# tryign to lock the signature with T in ECDSA would not work 
+# these are actually meant to be used in Schnorr signatures for adaptor signatures
+
+
+
 High level overview of the code:
 * Alice creates a signature that is incomplete without t.
 * Once t is revealed (or learned), she completes the signature.
@@ -33,20 +45,22 @@ alice_vk = alice_sk.verifying_key
 
 # Step 2: Message to be signed
 msg = b"Atomic Swap: Alice pays Bob 1 BTC"
-z = int.from_bytes(sha256(msg), 'big') % n
+z = int.from_bytes(sha256(msg), 'big') % n # Hash of the message encoded as an integer
 
 # Step 3: Bob generates secret adaptor
 t = int.from_bytes(os.urandom(32), 'big') % n
 T = t * G  # Public adaptor point
 
 # Step 4: Alice creates an adaptor signature (r, s')
-k = int.from_bytes(os.urandom(32), 'big') % n
-R = k * G
-r = R.x() % n
+k = int.from_bytes(os.urandom(32), 'big') % n # Alice's private nonce
+R = k * G 
+r = R.x() % n   
 
 # Adaptor public nonce: R + T
-R_t = R + T
+R_t = R + T #EC addition.. to lock the signature
 r_t = R_t.x() % n
+
+
 
 # Calculate s' = k⁻¹ * (z + r * alice_priv)
 k_inv = pow(k, -1, n)
